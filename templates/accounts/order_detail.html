@@ -1,0 +1,325 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+      .invoice {
+  background-color: rgba(47, 54, 54, 0.57);
+  margin: 20px 20px;
+  border-radius: 30px;
+  padding: 25px;
+  height: auto;
+  box-shadow: 16px 13px 40px #0a0000;
+
+}
+</style>
+<section class="">
+    <link rel="stylesheet" href="{% static 'css/ordertracking.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+<div class="container padding-bottom-3x mb-1">
+        <div class="card mb-3">
+          <div class="p-4 text-center text-white text-lg bg-primary rounded-top"><span class="text-uppercase">Tracking Order No - </span><span class="text-medium"> #{{order.order_number}}</span></div>
+          <div class="d-flex bg-secondary flex-wrap flex-sm-nowrap justify-content-between py-3 px-2 bg-secondary">
+            <div class="w-100 text-center  py-1 px-2"><span class="text-medium">Shipped Via:</span> UPS Ground</div>
+            <div class="w-100 text-center py-1 px-2"><span class="text-medium">Status:</span> {{order.status}}</div>
+          </div>
+        <div class="card-body invoice">
+            <div class="steps d-flex flex-wrap flex-sm-nowrap justify-content-between padding-top-2x padding-bottom-1x">
+             {% if order.status == 'Product Delivered' %}
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-cart"></i></div>
+                </div>
+                <h4 class="step-title">Confirmed Order</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-config"></i></div>
+                </div>
+                <h4 class="step-title">Processing Order</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-medal"></i></div>
+                </div>
+                <h4 class="step-title">Quality Check</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-car"></i></div>
+                </div>
+                <h4 class="step-title">Product Dispatched</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-home"></i></div>
+                </div>
+                <h4 class="step-title">Product Delivered</h4>
+              </div>
+                {% elif order.status == 'Product Dispatched' %}
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-cart"></i></div>
+                </div>
+                <h4 class="step-title">Confirmed Order</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-config"></i></div>
+                </div>
+                <h4 class="step-title">Processing Order</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-medal"></i></div>
+                </div>
+                <h4 class="step-title">Quality Check</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-car"></i></div>
+                </div>
+                <h4 class="step-title">Product Dispatched</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-home"></i></div>
+                </div>
+                <h4 class="step-title">Product Delivered</h4>
+              </div>
+                {% elif order.status == 'Quality Check' %}
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-cart"></i></div>
+                </div>
+                <h4 class="step-title">Confirmed Order</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-config"></i></div>
+                </div>
+                <h4 class="step-title">Processing Order</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-medal"></i></div>
+                </div>
+                <h4 class="step-title">Quality Check</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-car"></i></div>
+                </div>
+                <h4 class="step-title">Product Dispatched</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-home"></i></div>
+                </div>
+                <h4 class="step-title">Product Delivered</h4>
+              </div>
+            {% elif order.status == 'Processing Order' %}
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-cart"></i></div>
+                </div>
+                <h4 class="step-title">Confirmed Order</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-config"></i></div>
+                </div>
+                <h4 class="step-title">Processing Order</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-medal"></i></div>
+                </div>
+                <h4 class="step-title">Quality Check</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-car"></i></div>
+                </div>
+                <h4 class="step-title">Product Dispatched</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-home"></i></div>
+                </div>
+                <h4 class="step-title">Product Delivered</h4>
+              </div>
+                {% else %}
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-cart"></i></div>
+                </div>
+                <h4 class="step-title">Confirmed Order</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-config"></i></div>
+                </div>
+                <h4 class="step-title">Processing Order</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-medal"></i></div>
+                </div>
+                <h4 class="step-title">Quality Check</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-car"></i></div>
+                </div>
+                <h4 class="step-title">Product Dispatched</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-home"></i></div>
+                </div>
+                <h4 class="step-title">Product Delivered</h4>
+              </div>
+                {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+</section>
+<section>
+    <div class="container invoice " style="margin: 0 auto;width: 50%;padding: 50px;background: #f1f1f1;margin-top: 50px;margin-bottom: 50px;">
+    <div class="row invoice row-printable ">
+        <div class="col-md-12 invoice-content">
+            <!-- col-lg-12 start here -->
+            <div class="panel panel-default plain" id="dash_0">
+                <!-- Start .panel -->
+                <div class="panel-body p30">
+                    <div class="row">
+                        <!-- Start .row -->
+                        <div class="col-lg-6">
+                            <!-- col-lg-6 start here -->
+                            <div class="invoice-logo"><img src="{% static '/images/img.png' %}" alt="Invoice logo" style="max-height: 40px;"></div>
+                        </div>
+                        <!-- col-lg-6 end here -->
+                        <div class="col-lg-6">
+                            <!-- col-lg-6 start here -->
+                            <div class="invoice-from">
+                                <ul class="list-unstyled text-right">
+                                    <li><strong>Invoiced To</strong></li>
+                                    <li>{{order.full_name}}</li>
+                                    <li>{{order.full_address}}</li>
+                                    <li>{{order.city}}, {{order.state}}</li>
+                                    <li>{{order.country}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- col-lg-6 end here -->
+                        <div class="col-lg-12">
+                            <!-- col-lg-12 start here -->
+                            <div class="invoice-details mt25">
+                                <div class="well">
+                                    <ul class="list-unstyled mb0">
+                                        <li><strong>Order</strong> #{{order.order_number}}</li>
+                                        <li><strong>Transaction ID</strong> {{order.payment.payment_id}}</li>
+                                        <li><strong>Order Date:</strong> {{order.created_at}}</li>
+                                        <li><strong>payment Status:</strong> {{order.payment.status}}</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="invoice-items">
+                                <div class="table-responsive" style="overflow: hidden; outline: none;" tabindex="0">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th class="per70 text-center">Image</th>
+                                                <th class="per70 text-center">Products</th>
+                                                <th class="per5 text-center">Qty</th>
+                                                <th class="per25 text-center">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                          {% for item in order_detail %}
+
+                                            <tr>
+                                                  <td> <a href="{{ item.product.get_url }}"><img src="{{ item.product.images.url }}"  style="width: 50px;height: 50px;"></a> </td>
+
+                                                <td>{{item.product.product_name}}
+                                                  <p class="text-muted small">
+                                          					{% if item.variations.all %}
+                                          						{% for i in item.variations.all %}
+                                          							{{ i.variation_category | capfirst }} : {{ i.variation_value | capfirst }} <br>
+                                          						{% endfor %}
+                                          					{% endif %}
+                                          				</p>
+                                                </td>
+                                                <td class="text-center">{{item.quantity}}</td>
+                                                <td class="text-center">${{item.product_price}} USD</td>
+                                            </tr>
+                                          {% endfor %}
+                                        </tbody>
+
+                                        <tfoot>
+
+                                            <tr>
+                                                <th></th>
+                                                <th colspan="2" class="text-right">Sub Total:</th>
+                                                <th class="text-center">${{subtotal}} USD</th>
+                                            </tr>
+                                            <tr>
+                                                  <th></th>
+                                                <th colspan="2" class="text-right">Tax:</th>
+                                                <th class="text-center">${{order.tax}} USD</th>
+                                            </tr>
+
+                                            <tr>
+                                                  <th></th>
+                                                <th colspan="2" class="text-right">Grand Total:</th>
+                                                <th class="text-center">${{order.order_total}} USD</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="invoice-footer mt25">
+                                <p class="text-center">Thank you for shopping with us!</p>
+                            </div>
+
+                        </div>
+                        <!-- col-lg-12 end here -->
+                    </div>
+                    <!-- End .row -->
+                </div>
+            </div>
+            <!-- End .panel -->
+        </div>
+        <!-- col-lg-12 end here -->
+     <div class="col-6">
+         <button id="download-button" class="btn btn-info">Download Invoice img</button>
+  </div>
+    </div>
+    </div>
+</section>
+
+
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <script>
+document.getElementById('download-button').addEventListener('click', function() {
+  // Capture the HTML content
+  const ticketContent = document.querySelector('.invoice-content');
+
+  // Use html2canvas to generate the image
+  html2canvas(ticketContent).then(function(canvas) {
+    // Convert canvas to data URL
+    const imageUrl = canvas.toDataURL('image/png');
+
+    // Create a link for downloading the image
+    const link = document.createElement('a');
+    link.href = imageUrl;
+    link.download = 'invoice.png';
+    link.click();
+  });
+});
+</script>
+
+{% endblock %}

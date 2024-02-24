@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+<!-- ========================= SECTION MAIN ========================= -->
+{% load crispy_forms_tags %}
+{% load static %}
+<!-- ========================= SECTION MAIN ========================= -->
+
+{% block content %}
+<style>
+  ##orderss {
+	  background: linear-gradient(250deg, #5D6D7E, #5D6D7E);
+	  height: 600px;
+	  background-position: center;
+	  background-repeat: no-repeat;
+	  background-size: cover;
+
+  }
+  .table{
+	  background: linear-gradient(250deg, #dc354585, #0524ff61);
+	  height: auto;
+	  background-position: center;
+	  background-repeat: no-repeat;
+	  background-size: cover;
+	  border-radius: 15px;
+  }
+  .orderss {
+  background-color: rgba(47, 54, 54, 0.57);
+  margin: 20px 20px;
+  border-radius: 30px;
+  padding: 25px;
+  height: auto;
+  box-shadow: 16px 13px 40px #0a0000;
+
+}
+
+</style>
+
+
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-conten padding-y bg orderss" id="orderss">
+
+<div class="container">
+	<div class="row">
+	{% include 'includes/dashboard_sidebar.html' %}
+	<main class="col-md-9">
+		<article class="card orderss">
+		<header class="card-header">
+			<strong class="d-inline-block mr-3 ">Update product Gallery</strong>
+
+		</header>
+			<br>
+
+			{% for message in messages %}
+			<div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+				{{message}}
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			{% endfor %}
+        <!-- category_form.html -->
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit">Update product Gallery</button>
+        </form>
+
+		</article> <!-- order-group.// -->
+	</main>
+</div> <!-- row.// -->
+</div>
+
+
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+
+<!-- ========================= FOOTER ========================= -->
+<footer class="section-footer border-top padding-y">
+	<div class="container">
+		<p class="float-md-right">
+			&copy Copyright 2019 All rights reserved
+		</p>
+		<p>
+			<a href="#">Terms and conditions</a>
+		</p>
+	</div><!-- //container -->
+</footer>
+<!-- ========================= FOOTER END // ========================= -->
+
+
+
+</body>
+</html>
+{% endblock %}

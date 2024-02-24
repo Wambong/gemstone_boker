@@ -1,0 +1,94 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+body{
+  background-color: lightgrey;
+}
+.navmenu{
+  width: 100%;
+  background-color: #164863;
+  margin: 2px 2px;
+  padding: 2px;
+  float: left;
+  position: relative;
+  height: auto;
+  z-index: 1;
+  border-radius: 20px;
+}
+  .store1 {
+ background-color: rgba(47, 54, 54, 0.57);
+  margin: 10px 10px;
+  border-radius: 30px;
+  padding: 5px;
+  height: auto;
+  box-shadow: 16px 13px 40px #0a0000;
+
+  }
+
+.navmenu ul li{
+  list-style: none;
+  float: left;
+  display: inline-block;
+
+}
+
+.navmenu ul li a{
+  display: block;
+  text-decoration: none;
+  padding: 10px;
+  color: white;
+  font-size: 14px;
+  font-family: helvetica;
+}
+
+.navmenu ul li a:hover{
+  background-color: #DDF2FD;
+  color: black;
+  transition: background 0.3s linear;
+}
+
+.navmenu ul li ul.megamenu{
+  width: inherit;
+  padding: 10px;
+  background-color: lightblue;
+  position: absolute;
+  z-index: 1;
+  display: none;
+}
+
+.navmenu ul li:hover ul.megamenu{
+  display: block;
+
+}
+.navmenu ul li:hover ul.megamenu li{
+  width: 150px;
+  margin: 20px;
+  float: left;
+}
+.navmenu ul li:hover ul.megamenu li a{
+  padding: 10px;
+  color: black;
+}
+.navmenu ul li:hover ul.megamenu li a:hover{
+  background-color: black;
+  color: white;
+}
+.navmenu ul li:hover ul.megamenu li h1{
+  padding: 10px 0px;
+  font-size: 18px;
+  color: black;
+  text-align: center;
+  border-bottom: 1px solid black;
+
+}
+
+.navmenu ul li :hover ul.megamenu p{
+  color: red;
+  margin: 5px;
+  padding: 5px;
+}
+
+.navmenu ul li ul.megamenu li img{
+
+}

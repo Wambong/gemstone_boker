@@ -1,0 +1,43 @@
+
+<style>
+	  .footer {
+ background-color: #7abecc;
+  margin: 10px 10px;
+  border-radius: 20px;
+  padding: 15px;
+  height: auto;
+  box-shadow: 16px 13px 40px #0a0000;
+
+  }
+</style>
+<footer class="section-footer border-top footer">
+  <div class="container">
+    <section class="footer-bottom border-top row">
+      <div class="col-md-2">
+        <p class="text-muted">Azung Cooperation</p>
+      </div>
+      <div class="col-md-8 text-md-center">
+        <span class="px-2">azung@manager.ru</span>
+        <span class="px-2">+7 951 894-64-27</span>
+        <span class="px-2">Street Karla macksa, Kazan</span>
+      </div>
+      <div class="col-md-2 text-md-right text-muted">
+        <i class="fab fa-lg fa-cc-visa"></i>
+        <i class="fab fa-lg fa-cc-paypal"></i>
+        <i class="fab fa-lg fa-cc-mastercard"></i>
+      </div>
+    </section>
+  </div>
+  <!-- //container -->
+</footer>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+	$(document).ready(function(){
+		$('.thumb a').click(function(e){
+			e.preventDefault();
+			$('.mainImage img').attr('src', $(this).attr("href"));
+		})
+	})
+</script>

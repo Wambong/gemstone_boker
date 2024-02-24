@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+<!-- ========================= SECTION MAIN ========================= -->
+
+{% load static %}
+<!-- ========================= SECTION MAIN ========================= -->
+
+{% block content %}
+<style>
+  ##orderss {
+	  background: linear-gradient(250deg, #5D6D7E, #5D6D7E);
+	  height: 600px;
+	  background-position: center;
+	  background-repeat: no-repeat;
+	  background-size: cover;
+
+  }
+  .table{
+	  background: linear-gradient(250deg, #dc354585, #0524ff61);
+	  height: auto;
+	  background-position: center;
+	  background-repeat: no-repeat;
+	  background-size: cover;
+	  border-radius: 10px;
+  }
+  .orderss {
+  background-color: rgba(47, 54, 54, 0.57);
+  margin: 10px 10px;
+  border-radius: 20px;
+  padding: 10px;
+  height: auto;
+  box-shadow: 16px 13px 40px #0a0000;
+}
+  .orders_s {
+  background-color: #7abecc;
+  margin: 10px 10px;
+  border-radius: 20px;
+  padding: 10px;
+  height: auto;
+  box-shadow: 16px 13px 40px #0a0000;
+}
+.table-container {
+  max-height: 400px;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+  position: relative;
+}
+
+.table-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px; /* Width of the ruler */
+  height: 100%; /* Height of the ruler */
+  background-color: pink; /* Color of the ruler */
+}
+
+</style>
+
+
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-conten padding-y bg orders_s">
+
+<div class="container">
+	<div class="row">
+	{% include 'includes/dashboard_sidebar.html' %}
+	<main class="col-md-9">
+		<article class="card orderss">
+		<header class="card-header text-center orders_s">
+			<strong class="d-inline-block mr-3" style="text-align:center;">Inventory</strong>
+
+		</header>
+		<div class="card-body table">
+			<div class="row">
+				<div class="col-md-12 table-container" id="table">
+					<table class="table table-hover">
+					  <thead>
+						<tr>
+						  <th scope="col">Order #</th>
+						  <th scope="col">Billing Name</th>
+						  <th scope="col">Phone</th>
+						  <th scope="col">Email</th>
+						  <th scope="col">Order Total</th>
+						  <th scope="col">payment</th>
+						  <th scope="col">Status</th>
+							 <th scope="col">Date</th>
+							 <th scope="col">action</th>
+						</tr>
+					  </thead>
+					  <tbody>
+						{% for order in orders %}
+				    <tr>
+
+				      <th scope="row"><a href="{% url 'order_detail' order.order_number %}">{{order.order_number}}</a></th>
+
+				      <td>{{order.first_name}}</td>
+				      <td>{{order.phone}}</td>
+					  <td>{{order.email}}</td>
+				      <td>${{order.order_total}}</td>
+					  <td>{{order.payment}}</td>
+					  <td>{{order.status}}</td>
+					  <td>{{order.created_at|date:"d/m/Y"}}</td>
+						 <td>
+							 <form action="{% url 'update_order_status' order.id %}" method="post">
+								{% csrf_token %}
+								<select name="status">
+									{% for status in order.STATUS %}
+									<option value="{{ status.0 }}">{{ status.1 }}</option>
+									{% endfor %}
+								</select>
+								<button type="submit" class="btn btn-primary">Update</button>
+							</form>
+						 </td>
+				    </tr>
+						{% endfor %}
+
+					  </tbody>
+					</table>
+				</div>
+			</div> <!-- row.// -->
+		</div> <!-- card-body .// -->
+		</article> <!-- order-group.// -->
+	</main>
+</div> <!-- row.// -->
+</div>
+
+
+</section>
+
+
+</body>
+</html>
+{% endblock %}

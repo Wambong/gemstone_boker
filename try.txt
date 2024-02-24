@@ -1,0 +1,11 @@
+SECRET_KEY=)1a4vd9c_cyxtekb2$lu((g185dla&6x6d&44&+1w$9!)p)$8#
+
+SECRET_KEY1=go0d+cammk-62z8_n%$vrd(aj_n=o&i+eby3=x2d*infck^6jb
+ENVIRONMENT=development
+
+DEBUG=True
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_HOST_USER=wambonk@gmail.com
+EMAIL_HOST_PASSWORD=tkglwosjptznaeed
+EMAIL_USE_TLS=True

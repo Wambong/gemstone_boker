@@ -1,0 +1,75 @@
+
+{% load mptt_tags %}
+{% load static %}
+
+{% block css_addition %}<link rel="stylesheet" href="{% static 'css/style.css' %}"> {% endblock %}
+<style>
+
+</style>
+{% block content %}
+<nav class="navmenu">
+    <ul class="navbar-list">
+        <li>
+            <a href="{% url 'home' %}" class="brand-wrap">
+                <img class="logo" src="{% static './images/img.png' %}" />
+            </a>
+        </li>
+
+        {% recursetree categories %}
+        <li>
+            <a href="{{node.get_url}}">{{node.category_name}}</a>
+            {% if not node.is_leaf_node %}
+                <ul class="children megamenu">
+                    {{ children }}
+                </ul>
+            {% endif %}
+        </li>
+        {% endrecursetree %}
+
+        <li>
+            <a href="{% url 'store' %}">Store</a>
+        </li>
+
+        <li class="search-form">
+            <form action="{% url 'search' %}" class="search" method="GET">
+                <div class="input-group" style="padding:10px;">
+                    <input type="text" class="form-control" placeholder="Search..." name="keyword">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </li>
+    <li>
+        <div class="widget-header">
+            {% if user.id is None %}
+                <small class="title text-muted">Welcome guest!</small>
+                <div>
+                    <a href="{% url 'login' %}" style="display: inline-block;">Sign in</a>
+                    <a href="{% url 'register' %}" style="display: inline-block;">Register</a>
+                </div>
+            {% else %}
+                <div class="title text-muted">Welcome {{user.first_name}}!
+                    <img src="{{ profile_picture_url  }}" alt="" width="25" height="25" style="border-radius:50%;">
+                </div>
+                <div>
+                    <a href="{% url 'dashboard' %}" class="mr-2" style="display: inline-block;">Dashboard</a>
+                    <a href="{% url 'logout' %}" style="display: inline-block;">Logout</a>
+                </div>
+            {% endif %}
+        </div>
+    </li>
+        <li class="ml-auto" style=" justify-items: end;">
+            <a href="{% url 'cart' %}" class="widget-header pl-3 ml-3">
+                <div class="icon icon-sm rounded-circle border">
+                    <i class="fa fa-shopping-cart"></i>
+                </div>
+                <span class="badge badge-pill badge-danger notify">{{cart_count}}</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+{% endblock %}
