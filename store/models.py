@@ -1,12 +1,13 @@
 from django.db import models
 from django.shortcuts import render
-
-
-from mptt.models import MPTTModel, TreeForeignKey
+from django.utils.text import slugify
+from ckeditor_uploader.fields import RichTextUploadingField
+# from mptt.models import MPTTModel, TreeForeignKey
 from category.models import Category
 from django.urls import reverse
 from accounts.models import Account
 from django.db.models import Avg, Count
+
 
 # Create your models here.
 class Product(models.Model):
@@ -31,16 +32,16 @@ class Product(models.Model):
         ('Togo', 'Togo'), ('Tunisia', 'Tunisia'), ('Uganda', 'Uganda'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'),
     )
     product_name = models.CharField(max_length=200, unique=True)
-    category = TreeForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
+    category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE, null=True, blank=True)
+    parent = models.ForeignKey('self', related_name='variants', on_delete=models.CASCADE, blank=True, null=True)
     slug = models.SlugField(max_length=200, unique=True)
-    description = models.TextField(max_length=500, blank=True)
+    description = RichTextUploadingField(null=True, blank=True)
     seller = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)
     price = models.IntegerField()
     images = models.ImageField(upload_to='photos/products')
     stock = models.IntegerField()
-    country = models.CharField(max_length=220, choices=COUNTRY, null = True, blank=True)
+    country = models.CharField(max_length=220, choices=COUNTRY, null=True, blank=True)
     is_Available = models.BooleanField(default=True)
-    category = TreeForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     is_verified = models.BooleanField(default=False)
     modified_date = models.DateTimeField(auto_now=True)
@@ -65,6 +66,22 @@ class Product(models.Model):
             count = int(reviews['count'])
         return count
 
+    def save(self, *args, **kwargs):
+
+        if self.slug == None:
+            slug = slugify(self.product_name)
+
+            has_slug = Product.objects.filter(slug=slug).exists()
+            count = 1
+            while has_slug:
+                count += 1
+                slug = slugify(self.product_name) + '-' + str(count)
+                has_slug = Product.objects.filter(slug=slug).exists()
+
+            self.slug = slug
+
+        super().save(*args, **kwargs)
+
 
 class VariationManager(models.Manager):
     def colors(self):
@@ -83,7 +100,7 @@ variation_category_choice = (
 class Variation(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     variation_category = models.CharField(max_length=100, choices=variation_category_choice)
-    variation_value = models.CharField(max_length=100)
+    variation_value = models.CharField(max_length=100, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now=True)
 
@@ -91,7 +108,6 @@ class Variation(models.Model):
 
     def __str__(self):
         return self.variation_value
-
 
 
 class ReviewRating(models.Model):

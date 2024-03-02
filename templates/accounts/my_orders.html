@@ -20,13 +20,13 @@
 	  background-position: center;
 	  background-repeat: no-repeat;
 	  background-size: cover;
-	  border-radius: 15px;
+	  border-radius: 5px;
   }
   .orderss {
   background-color: #7abecc;
-  margin: 20px 20px;
+  margin: 5px 5px;
   border-radius: 30px;
-  padding: 25px;
+  padding: 5px;
   height: auto;
   box-shadow: 16px 13px 40px #0a0000;
 
@@ -57,6 +57,12 @@
   height: 100%; /* Height of the ruler */
   background-color: pink; /* Color of the ruler */
 }
+	  .store1 {
+ background-color: rgba(47, 54, 54, 0.57);
+  border-radius: 30px;
+  height: auto;
+  box-shadow: 16px 13px 40px #0a0000;
+}
 
 </style>
 
@@ -65,7 +71,7 @@
 <!-- ========================= SECTION CONTENT ========================= -->
 <section class="section-conten padding-y bg orderss">
 
-<div class="container">
+<div class="container-fluid">
 	<div class="row">
 	{% include 'includes/dashboard_sidebar.html' %}
 	<main class="col-md-9">
@@ -84,8 +90,8 @@
 						  <th scope="col">Billing Name</th>
 						  <th scope="col">Phone</th>
 						  <th scope="col">Order Total</th>
-							<th scope="col">Status</th>
-							 <th scope="col">Date</th>
+						  <th scope="col">Status</th>
+						   <th scope="col">Date</th>
 						</tr>
 					  </thead>
 					  <tbody>
@@ -98,7 +104,7 @@
 				      <td>{{order.phone}}</td>
 				      <td>${{order.order_total}}</td>
 						 <td>{{order.status}}</td>
-							<td>{{order.created_at |date:"d/m/Y"}}</td>
+						<td>{{order.created_at |date:"d/m/Y"}}</td>
 				    </tr>
 						{% endfor %}
 
@@ -108,16 +114,61 @@
 				</div>
 			</div> <!-- row.// -->
 		</div> <!-- card-body .// -->
+<!--			orders in seller's products-->
+{% if user.is_authenticated and user.customer_type == 'Seller' %}
+		<header class="card-header">
+			<strong class="d-inline-block mr-3 ">Your Sales History</strong>
+
+		</header>
+		<div class="card-body table">
+			<div class="row">
+				<div class="col-md-12 table-container" id="table">
+					<table class="table table-hover">
+					  <thead>
+						<tr>
+						  <th scope="col">Order Number</th>
+						  <th scope="col"> Product:</th>
+						  <th scope="col">Quantity:</th>
+						  <th scope="col"> Price:</th>
+							 <th scope="col"> Total cost</th>
+						  <th scope="col">Created At:</th>
+						   <th scope="col">UpDate</th>
+						</tr>
+					  </thead>
+					  <tbody>
+						{% for order_product in seller_order_products %}
+				    <tr>
+
+				      <th scope="row"><a href="#">{{ order_product.order.order_number }}</a></th>
+
+				      <td>{{ order_product.product.product_name }}</td>
+				      <td> {{ order_product.quantity }}</td>
+				      <td>{{ order_product.product_price }}</td>
+						<td> {{ order_product.total_cost }}</td>
+						 <td>{{ order_product.created_at|date:"d/m/Y" }}</td>
+						<td>{{ order_product.updated_at |date:"d/m/Y"}}</td>
+				    </tr>
+						{% endfor %}
+
+					  </tbody>
+					</table>
+
+				</div>
+			</div> <!-- row.// -->
+		</div> <!-- card-body .// -->
+{% endif %}
 		</article> <!-- order-group.// -->
 	</main>
 </div> <!-- row.// -->
 	<br>
 	<br>
 	<hr>
-	<h3 class="text-center">Your products</h3>
-	  <div class="">
+	{% if user.is_authenticated and user.customer_type == 'Seller' %}
+	<h3 class="text-center" style="font-size:35px;"><i><b>Your products</b></i></h3>
+	<hr>
+	  <div class="container-fluid row">
           {% for product in products %}
-          <div class="col-md-3">
+           <div class="col-md-3">
             <div class="card card-product-grid store1">
               <a href="{{ product.get_url }}" class="img-wrap">
                 <img src="{{ product.images.url }}" style="border-radius: 30px;" alt="{{product.product_name}}'s picture">
@@ -125,18 +176,18 @@
               <figcaption class="info-wrap">
                   <div class="row">
                       <div class="column">
-                        <a href="{{ product.get_url }}" class="title">{{product.product_name}}
+                        <a href="{{ product.get_url }}" class="title" style="font-size:16px;">{{product.product_name}}
                         <div class="price mt-1">${{product.price}}</div>
                       </div>
                       {% if product.is_verified %}
                           <div class="column" style=" margin-left: 80px;">
-                               <img id="verified-image" src="{% static 'product_verified.png' %}" style="height: 25px; width: 25px; border-radius: 20px;" alt="{{ product.country }}">
+                               <img id="verified-image" src="{% static 'product_verified.png' %}" style="height: 25px; width: 25px; border-radius: 20px; margin-left: 25px;" alt="{{ product.country }}">
                           </div>
                       {% endif %}
                   </div>
                 <!-- price-wrap.// -->
                     <div class="row">
-                <div class="rating-star column">
+                <div class="rating-star column" style="font-size:16px">
 					<span>
 						<i class="fa fa-star{% if product.averageReview < 0.5 %}-o{% elif product.averageReview >= 0.5 and product.averageReview < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
 						<i class="fa fa-star{% if product.averageReview < 1.5 %}-o{% elif product.averageReview >= 1.5 and product.averageReview < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
@@ -145,12 +196,12 @@
 						<i class="fa fa-star{% if product.averageReview < 4.5 %}-o{% elif product.averageReview >= 4.5 and product.averageReview < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
 						</span>
 				</div>
-                 <div class="column" style=" margin-left: 80px;">
-                     <div class="text-center">
+                 <div class="column" style="font-size:17px;">
+                     <div class="text-center" style=" margin-left: 70px;">
                             <i class="fa-sharp fa-solid fa-location-dot" style=""> </i>
                      </div>
                      <br>
-                 <img src="{% static 'country/' %}{{ product.country }}.png" style="height: 25px; width: 25px; border-radius: 20px;" alt="{{ product.country }}">
+                 <img src="{% static 'country/' %}{{ product.country }}.png" style="height: 25px; width: 25px; border-radius: 20px; margin-left: 85px;" alt="{{ product.country }}">
                  </div>
                    </div>
                     </a>
@@ -160,6 +211,7 @@
           {% endfor %}
 
         </div>
+	{% endif %}
 </div>
 
 

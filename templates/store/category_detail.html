@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ category.category_name }} | {% endblock %}
+
+{% block content %}
+<style>
+      .store1 {
+ background-color: rgba(47, 54, 54, 0.57);
+  margin: 10px 10px;
+  border-radius: 30px;
+  padding: 5px;
+  height: auto;
+  box-shadow: 16px 13px 40px #0a0000;
+}
+</style>
+
+
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+            <li>
+            <a href="{% url 'home' %}" class="brand-wrap">Home
+<!--                <img class="logo" src="{% static './images/img.png' %}" />-->
+            </a>
+            </li>
+            {% if category.parent %}
+                <li><a href="{% url 'category_detail' category.parent.slug %}">{{ category.parent.category_name }}</a></li>
+            {% endif %}
+            <li class="is-active"><a href="{% url 'category_detail' category.slug %}">{{ category.category_name }}</a></li>
+        </ul>
+    </nav>
+
+    <h1 class="title">{{ category.category_name }}</h1>
+
+    {% if category.children.all %}
+        <div class="columns is-multiline">
+            {% for subcategory in category.children.all %}
+                <div class="column is-3">
+                    <h2 class="subtitle">{{ subcategory.category_name }}</h2>
+
+                    <a href="{% url 'category_detail' subcategory.slug %}">View products</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+    <div class="row">
+          {% for product in products %}
+          <div class="col-md-3">
+            <div class="card card-product-grid store1">
+              <a href="{{ product.get_url }}" class="img-wrap">
+                <img src="{{ product.images.url }}" style="border-radius: 30px;" alt="{{product.product_name}}'s picture">
+              </a>
+              <figcaption class="info-wrap">
+                  <div class="row">
+                      <div class="column">
+                        <a href="{{ product.get_url }}" class="title">{{product.product_name}}
+                        <div class="price mt-1">${{product.price}}</div>
+                      </div>
+                      {% if product.is_verified %}
+                          <div class="column" style=" margin-left: 80px;">
+                               <img id="verified-image" src="{% static 'product_verified.png' %}" style="height: 25px; width: 25px; border-radius: 20px;" alt="{{ product.country }}">
+                          </div>
+                      {% endif %}
+                  </div>
+                <!-- price-wrap.// -->
+                    <div class="row">
+                <div class="rating-star column">
+					<span>
+						<i class="fa fa-star{% if product.averageReview < 0.5 %}-o{% elif product.averageReview >= 0.5 and product.averageReview < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
+						<i class="fa fa-star{% if product.averageReview < 1.5 %}-o{% elif product.averageReview >= 1.5 and product.averageReview < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
+						<i class="fa fa-star{% if product.averageReview < 2.5 %}-o{% elif product.averageReview >= 2.5 and product.averageReview < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
+						<i class="fa fa-star{% if product.averageReview < 3.5 %}-o{% elif product.averageReview >= 3.5 and product.averageReview < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
+						<i class="fa fa-star{% if product.averageReview < 4.5 %}-o{% elif product.averageReview >= 4.5 and product.averageReview < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
+						</span>
+				</div>
+                 <div class="column" style=" margin-left: 80px;">
+                     <div class="text-center">
+                            <i class="fa-sharp fa-solid fa-location-dot" style=""> </i>
+                     </div>
+                     <br>
+                 <img src="{% static 'country/' %}{{ product.country }}.png" style="height: 25px; width: 25px; border-radius: 20px;" alt="{{ product.country }}">
+                 </div>
+                   </div>
+                    </a>
+              </figcaption>
+            </div>
+          </div>
+          {% endfor %}
+
+        </div>
+    {% endif %}
+{% endblock %}

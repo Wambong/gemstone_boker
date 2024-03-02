@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 
 class MyAccountManager(BaseUserManager):
-    def create_user(self, first_name, last_name, username, email,  customer_type, password=None):
+    def create_user(self, first_name, last_name, username, email, customer_type, password=None):
         if not email:
             raise ValueError('user must have an email address')
         if not username:
@@ -21,14 +21,20 @@ class MyAccountManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, first_name, last_name, email, username, password):
+    def create_superuser(self, first_name, last_name, email, username, customer_type, password):
         user = self.create_user(
             email=self.normalize_email(email),
             username=username,
             password=password,
             first_name=first_name,
             last_name=last_name,
+            customer_type=customer_type,
         )
+        # Create a user profile
+        profile = UserProfile()
+        profile.user_id = user.id
+        profile.profile_picture = 'default/default-user.png'
+        profile.save()
 
         user.is_admin = True
         user.is_active = True
@@ -51,7 +57,7 @@ class Account(AbstractBaseUser):
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now_add=True)
     is_admin = models.BooleanField(default=False)
-    customer_type = models.CharField(max_length=220, choices=TYPE, null = True, blank=True)
+    customer_type = models.CharField(max_length=220, choices=TYPE, null=True, blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     is_superadmin = models.BooleanField(default=False)

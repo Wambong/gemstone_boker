@@ -110,3 +110,14 @@ def submit_review(request, product_id):
 
 def index(request):
     return render(request,'index.html')
+
+def category_detail(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    products = category.products.filter(parent=None)
+
+    context = {
+        'category': category,
+        'products': products
+    }
+
+    return render(request, 'store/category_detail.html', context)

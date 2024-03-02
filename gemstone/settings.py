@@ -33,12 +33,14 @@ INSTALLED_APPS = [
     'store',
     'carts',
     "orders",
-    'mptt',
-    'django_mptt_admin',
+    # 'mptt',
+    # 'django_mptt_admin',
     'admin_honeypot',
     'crispy_forms',
     "crispy_bootstrap4",
     'phone_field',
+    'ckeditor',
+    'ckeditor_uploader',
 
 
 ]
@@ -71,8 +73,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'category.context_processors.menu_links',
-                'category.context_processors.categories',
+                # 'category.context_processors.menu_links',
+                'category.context_processors.menu_categories',
                 'carts.context_processors.counter',
                 'accounts.context_processors.profile_picture',
             ],
@@ -84,27 +86,27 @@ WSGI_APPLICATION = 'gemstone.wsgi.application'
 
 AUTH_USER_MODEL = 'accounts.Account'
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'azung_db',
-        'USER': 'postgres',
-        'PASSWORD': 'Hillarry',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
-POSTGRES_LOCALLY = False
-if ENVIRONMENT == 'production' or POSTGRES_LOCALLY == True:
-    DATABASES['default'] = dj_database_url.parse(env('DATABASE_URL'))
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'azung_db',
+#         'USER': 'postgres',
+#         'PASSWORD': 'Hillarry',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+
+# POSTGRES_LOCALLY = False
+# if ENVIRONMENT == 'production' or POSTGRES_LOCALLY == True:
+#     DATABASES['default'] = dj_database_url.parse(env('DATABASE_URL'))
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -140,10 +142,11 @@ STATICFILES_DIRS = [
 
 
 MEDIA_URL = '/images/'
-if ENVIRONMENT == 'production' or POSTGRES_LOCALLY == True:
-    DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
-else:
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+# if ENVIRONMENT == 'production' or POSTGRES_LOCALLY == True:
+#     DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+# else:
+#     MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 
 # cloudinary storage
 CLOUDINARY_STORAGE = {
@@ -169,6 +172,16 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': "100%",
+    },
+}
+
 SESSION_REMEMBER_ME_EXPIRY = 2592000  # 30 days in seconds
 TELEGRAM_BOT_TOKEN = "6919097745:AAG07P5y7uegerGTrQcA1u7GPT_9gzOicU8"
-chatId = '5102556482'
+chat_id = '5102556482'

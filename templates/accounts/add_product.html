@@ -6,12 +6,13 @@
 
 {% block content %}
 <style>
-  ##orderss {
-	  background: linear-gradient(250deg, #5D6D7E, #5D6D7E);
-	  height: 600px;
-	  background-position: center;
-	  background-repeat: no-repeat;
-	  background-size: cover;
+  #orderss {
+  background-color: rgba(47, 54, 54, 0.57);
+  margin: 20px 20px;
+  border-radius: 30px;
+  padding: 25px;
+  height: auto;
+  box-shadow: 16px 13px 40px #0a0000;
 
   }
   .table{
@@ -23,7 +24,7 @@
 	  border-radius: 15px;
   }
   .orderss {
-  background-color: rgba(47, 54, 54, 0.57);
+
   margin: 20px 20px;
   border-radius: 30px;
   padding: 25px;
@@ -31,13 +32,17 @@
   box-shadow: 16px 13px 40px #0a0000;
 
 }
+        #form-container {
+        max-height: 70vh; /* Limit height to the height of the screen */
+        overflow-y: auto; /* Add vertical scrollbar when content exceeds height */
+    }
 
 </style>
 
 
 
 <!-- ========================= SECTION CONTENT ========================= -->
-<section class="section-conten padding-y bg orderss" id="orderss">
+<section class="section-conten padding-y bg " id="orderss">
 
 <div class="container">
 	<div class="row">
@@ -57,13 +62,14 @@
 				</button>
 			</div>
 			{% endfor %}
-
+<div id="form-container">
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
+			{{form.media}}
             {{ form|crispy }}
             <button type="submit">Add Products</button>
         </form>
-
+</div>
 		</article> <!-- order-group.// -->
 	</main>
 </div> <!-- row.// -->
@@ -74,18 +80,6 @@
 <!-- ========================= SECTION CONTENT END// ========================= -->
 
 
-<!-- ========================= FOOTER ========================= -->
-<footer class="section-footer border-top padding-y">
-	<div class="container">
-		<p class="float-md-right">
-			&copy Copyright 2019 All rights reserved
-		</p>
-		<p>
-			<a href="#">Terms and conditions</a>
-		</p>
-	</div><!-- //container -->
-</footer>
-<!-- ========================= FOOTER END // ========================= -->
 
 
 

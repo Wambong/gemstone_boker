@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegistrationForm, UserForm, UserProfileForm
 from .models import Account
 from django.contrib import messages, auth
+import asyncio
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from carts.views import _cart_id
@@ -10,10 +11,9 @@ from orders.models import Order, OrderProduct
 from .forms import ProductForm
 from .models import UserProfile
 from django.conf import settings
-# telegram bot
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from telegram import Bot
+
+from accounts.signals import product_created
+
 # Verification email
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
@@ -22,7 +22,9 @@ from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 import requests
-
+from accounts.models import Account
+from  telegram import Update, Bot
+from telegram.ext import CommandHandler, MessageHandler, filters, Updater
 
 def register(request):
     if request.method == 'POST':
@@ -33,7 +35,7 @@ def register(request):
             phone_number = form.cleaned_data['phone_number']
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            customer_type = form.cleaned_data['customer_type']
+            # customer_type = form.cleaned_data['customer_type']
             username = email.split('@')[0]
             user = Account.objects.create_user(
                 first_name=first_name,
@@ -41,7 +43,7 @@ def register(request):
                 username=username,
                 email=email,
                 password=password,
-                customer_type=customer_type,
+                # customer_type=customer_type,
             )
             user.phone_number = phone_number
             user.save()
@@ -73,7 +75,6 @@ def register(request):
         "form": form,
     }
     return render(request, "accounts/register.html", context)
-
 
 def login(request):
     if request.method == 'POST':
@@ -250,11 +251,21 @@ def resetPassword(request):
 def my_orders(request):
     orders = Order.objects.filter(user=request.user, is_ordered=True).order_by('-created_at')
     products = Product.objects.filter(seller=request.user, is_Available=True).order_by('id')
+    seller = request.user
+
+    # Retrieve all order products for the current seller
+    seller_order_products = OrderProduct.objects.filter(product__seller=seller)
+    for order_product in seller_order_products:
+        order_product.total_cost = order_product.product_price * order_product.quantity
+
     context = {
         'orders': orders,
         "products": products,
+        'seller_order_products': seller_order_products,
+
     }
     return render(request, 'accounts/my_orders.html', context)
+
 
 
 @login_required(login_url='login')
@@ -316,7 +327,6 @@ def update_order_status(request, order_id):
         order.save()
         return redirect('inventory')  # Redirect to the order list page after updating the status
 
-
 @login_required(login_url='login')
 def edit_profile(request):
     userprofile = get_object_or_404(UserProfile, user=request.user)
@@ -338,14 +348,9 @@ def edit_profile(request):
     }
     return render(request, 'accounts/edit_profile.html', context)
 
-
-def send_telegram_notification(product_name):
-    bot_token = settings.TELEGRAM_BOT_TOKEN
-    bot = Bot(token=bot_token)
-    chat_id = 'YOUR_TELEGRAM_CHAT_ID'  # Replace with your chat ID
-    message = f'New product added: {product_name}'
-    bot.send_message(chat_id=chat_id, text=message)
-
+from .utils import send_product_notification
+async def main(product):
+    await send_product_notification(product)
 @login_required(login_url='login')
 def add_product(request):
     if request.method == 'POST':
@@ -354,6 +359,12 @@ def add_product(request):
             product = form.save(commit=False)
             product.seller = request.user
             product.save()
+            product_created(sender=Product, instance=product, created=True)
+            try:
+                asyncio.run(main(product))
+            except Exception as e:
+                messages.error(request, f"An error occurred sending notification: {e}")
+
             messages.success(request, 'You have successfully added a new product.')
             return redirect('add_product')
     else:
@@ -393,4 +404,3 @@ def add_product_gallery(request):
         form = ProductGalleryForm()
 
     return render(request, 'accounts/add_product_gallery.html', {'form': form})
-

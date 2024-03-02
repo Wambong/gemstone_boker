@@ -183,16 +183,16 @@ a:hover {
 }
 
 .padding-y-sm {
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .padding-top-sm {
-  padding-top: 20px;
+  padding-top: 10px;
 }
 
 .padding-bottom-sm {
-  padding-bottom: 20px;
+  padding-bottom: 10px;
 }
 
 .relative {
