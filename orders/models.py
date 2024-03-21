@@ -72,3 +72,21 @@ class OrderProduct(models.Model):
     def __str__(self):
         return self.product.product_name
 
+class PaymentRequest(models.Model):
+    TYPE = (
+        ("Request Payment", "Request Payment"),
+        ("pending", "pending"),
+        ("paid", "paid"),
+    )
+    order_product = models.ForeignKey(OrderProduct, on_delete=models.CASCADE)
+    product_name = models.CharField(max_length=200)
+    order_number = models.CharField(max_length=20)
+    quantity = models.IntegerField()
+    total_cost = models.FloatField()
+    seller = models.ForeignKey(Account, on_delete=models.CASCADE)
+    phone_number = models.CharField(max_length=20)
+    status = models.CharField(max_length=220, choices=TYPE, default="Request Payment", null=True, blank=True)
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Submitted Order Product: {self.order_product.id}'

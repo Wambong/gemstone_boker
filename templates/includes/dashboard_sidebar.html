@@ -1,9 +1,9 @@
 <style>
 	  .dashboard {
  background-color: rgba(47, 54, 54, 0.57);
-  margin: 10px 10px;
+  margin: 5px 5px;
   border-radius: 20px;
-  padding: 15px;
+  padding: 5px;
   height: auto;
   box-shadow: 16px 13px 40px #0a0000;
 
@@ -19,6 +19,7 @@
 		<a class="list-group-item {% if '/add_variation/' == request.path %}active{% endif %}" href="{% url 'add_variation' %}">Update product variation</a>
 		<a class="list-group-item {% if '/add_product_gallery/' == request.path %}active{% endif %}" href="{% url 'add_product_gallery' %}">add gallery</a>
 		<a class="list-group-item {% if '/inventory/' == request.path %}active{% endif %}" href="{% url 'inventory' %}">Inventory</a>
+		<a class="list-group-item {% if '/all_payment_request/' == request.path %}active{% endif %}" href="{% url 'all_payment_request' %}">Payment Requests</a>
 	{% elif user.customer_type == "Seller" %}
 			<a class="list-group-item {% if '/add_product/' == request.path %}active{% endif %}" href="{% url 'add_product' %}"> Add Product</a>
 	{% endif %}

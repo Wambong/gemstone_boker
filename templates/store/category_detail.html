@@ -29,7 +29,7 @@
         </ul>
     </nav>
 
-    <h1 class="title">{{ category.category_name }}</h1>
+    <h1 class="title" style="background-color: #7abecc;">{{ category.category_name }}</h1>
 
     {% if category.children.all %}
         <div class="columns is-multiline">
@@ -42,7 +42,7 @@
             {% endfor %}
         </div>
     {% else %}
-    <div class="row">
+    <div class="row" style="background-color: #7abecc;">
           {% for product in products %}
           <div class="col-md-3">
             <div class="card card-product-grid store1">

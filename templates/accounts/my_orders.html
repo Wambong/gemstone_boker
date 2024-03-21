@@ -77,7 +77,7 @@
 	<main class="col-md-9">
 		<article class="card orders_s">
 		<header class="card-header">
-			<strong class="d-inline-block mr-3 ">Your Order History</strong>
+			<strong class="d-inline-block mr-3 text-center">Your Order History</strong>
 
 		</header>
 		<div class="card-body table">
@@ -114,10 +114,11 @@
 				</div>
 			</div> <!-- row.// -->
 		</div> <!-- card-body .// -->
+			<hr>
 <!--			orders in seller's products-->
 {% if user.is_authenticated and user.customer_type == 'Seller' %}
 		<header class="card-header">
-			<strong class="d-inline-block mr-3 ">Your Sales History</strong>
+	<h3 class="text-center" style="font-size:35px;"><i><b>Your Sales history</b></i></h3>
 
 		</header>
 		<div class="card-body table">
@@ -128,31 +129,41 @@
 						<tr>
 						  <th scope="col">Order Number</th>
 						  <th scope="col"> Product:</th>
-						  <th scope="col">Quantity:</th>
-						  <th scope="col"> Price:</th>
+						  <th scope="col">Qty:</th>
 							 <th scope="col"> Total cost</th>
 						  <th scope="col">Created At:</th>
-						   <th scope="col">UpDate</th>
+							 <th scope="col"> Status:</th>
+							<th scope="col">Action:</th>
+
 						</tr>
 					  </thead>
 					  <tbody>
-						{% for order_product in seller_order_products %}
+						{% for order_product in paymentrequests %}
 				    <tr>
 
-				      <th scope="row"><a href="#">{{ order_product.order.order_number }}</a></th>
-
-				      <td>{{ order_product.product.product_name }}</td>
+				      <td>{{ order_product.order_number }}</td>
+				      <td>{{ order_product.product_name }}</td>
 				      <td> {{ order_product.quantity }}</td>
-				      <td>{{ order_product.product_price }}</td>
-						<td> {{ order_product.total_cost }}</td>
-						 <td>{{ order_product.created_at|date:"d/m/Y" }}</td>
-						<td>{{ order_product.updated_at |date:"d/m/Y"}}</td>
+					<td> {{ order_product.total_cost }}</td>
+					 <td>{{ order_product.submitted_at|date:"d/m/Y" }}</td>
+					 <td>{{ order_product.status }}</td>
+				   <td>
+                    <form method="post" action="{% url 'update_status_to_pending' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="order_product_id" value="{{ order_product.id }}">
+						{% if order_product.status == "Request Payment" %}
+                        	<button type="submit" class="btn btn-primary">Submit</button>
+						{% else %}
+						    <p>Thanks</p>
+						{% endif %}
+                    </form>
+                </td>
+
 				    </tr>
 						{% endfor %}
 
 					  </tbody>
 					</table>
-
 				</div>
 			</div> <!-- row.// -->
 		</div> <!-- card-body .// -->
@@ -221,6 +232,5 @@
 
 
 
-</body>
-</html>
+
 {% endblock %}

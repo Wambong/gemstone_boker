@@ -33,14 +33,14 @@ INSTALLED_APPS = [
     'store',
     'carts',
     "orders",
-    # 'mptt',
-    # 'django_mptt_admin',
+
     'admin_honeypot',
     'crispy_forms',
     "crispy_bootstrap4",
     'phone_field',
     'ckeditor',
     'ckeditor_uploader',
+    'notifications',
 
 
 ]
@@ -73,7 +73,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                # 'category.context_processors.menu_links',
+                'accounts.context_processors.notification_count',
+                "accounts.context_processors.unread_notifications",
                 'category.context_processors.menu_categories',
                 'carts.context_processors.counter',
                 'accounts.context_processors.profile_picture',
@@ -90,7 +91,15 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    },
+    # 'mysql':{
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'azungdb',
+    #     'USER': 'root',
+    #     'PASSWORD': 'Hillarry',
+    #     'HOST':'localhost',
+    #     'PORT':'3306',
+    # }
 }
 
 # DATABASES = {
@@ -103,6 +112,9 @@ DATABASES = {
 #         'PORT': '5432',
 #     }
 # }
+#
+
+
 
 # POSTGRES_LOCALLY = False
 # if ENVIRONMENT == 'production' or POSTGRES_LOCALLY == True:

@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product,ReviewRating, ProductGallery
+from .signals import comment_created
 from carts.views import _cart_id
 from carts.models import CartItem
 from django.db.models import Q
 from django.http import HttpResponse
+
 
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from category.models import Category
@@ -94,7 +96,7 @@ def submit_review(request, product_id):
         except ReviewRating.DoesNotExist:
             form = ReviewForm(request.POST)
             if form.is_valid():
-                data = ReviewRating()
+                data = form.save(commit=False)
                 data.subject = form.cleaned_data['subject']
                 data.rating = form.cleaned_data['rating']
                 data.review = form.cleaned_data['review']

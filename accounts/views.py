@@ -1,30 +1,33 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RegistrationForm, UserForm, UserProfileForm
-from .models import Account
-from django.contrib import messages, auth
 import asyncio
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from carts.views import _cart_id
-from carts.models import *
-from orders.models import Order, OrderProduct
-from .forms import ProductForm
-from .models import UserProfile
+from datetime import datetime
+import requests
+import json
+import uuid
+from basicauth import encode
+import requests
+from django.http import JsonResponse
 from django.conf import settings
-
-from accounts.signals import product_created
-
+from django.contrib import messages, auth
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.tokens import default_token_generator
 # Verification email
 from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes
-from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
-import requests
+from django.shortcuts import redirect, get_object_or_404
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.views.decorators.http import require_POST
+from notifications.signals import notify
 from accounts.models import Account
-from  telegram import Update, Bot
-from telegram.ext import CommandHandler, MessageHandler, filters, Updater
+from .mtnmomo import PayClass
+from carts.models import *
+from carts.views import _cart_id
+from orders.models import Order, OrderProduct, PaymentRequest
+from .forms import ProductForm
+from .forms import RegistrationForm, UserForm, UserProfileForm
+from .models import UserProfile
+from .forms import VariationForm
 
 def register(request):
     if request.method == 'POST':
@@ -35,7 +38,7 @@ def register(request):
             phone_number = form.cleaned_data['phone_number']
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            # customer_type = form.cleaned_data['customer_type']
+            customer_type = form.cleaned_data['customer_type']
             username = email.split('@')[0]
             user = Account.objects.create_user(
                 first_name=first_name,
@@ -43,7 +46,7 @@ def register(request):
                 username=username,
                 email=email,
                 password=password,
-                # customer_type=customer_type,
+                customer_type=customer_type,
             )
             user.phone_number = phone_number
             user.save()
@@ -249,22 +252,53 @@ def resetPassword(request):
 
 @login_required(login_url='login')
 def my_orders(request):
+
     orders = Order.objects.filter(user=request.user, is_ordered=True).order_by('-created_at')
     products = Product.objects.filter(seller=request.user, is_Available=True).order_by('id')
     seller = request.user
-
-    # Retrieve all order products for the current seller
     seller_order_products = OrderProduct.objects.filter(product__seller=seller)
+    paymentrequests = PaymentRequest.objects.none()
     for order_product in seller_order_products:
-        order_product.total_cost = order_product.product_price * order_product.quantity
+        total_cost = order_product.product_price * order_product.quantity
+        if PaymentRequest.objects.filter(order_product=order_product).exists():
+            pass
+        else:
+            payment_request = PaymentRequest.objects.create(
+                order_product=order_product,
+                product_name=order_product.product.product_name,
+                order_number=order_product.order.order_number,
+                quantity=order_product.quantity,
+                total_cost=total_cost,
+                seller=seller,
+                phone_number=seller.phone_number,
+                submitted_at=datetime.now()
+            )
+
+            payment_request.save()
+        paymentrequests = PaymentRequest.objects.filter(seller=request.user).order_by('-submitted_at')
 
     context = {
         'orders': orders,
         "products": products,
-        'seller_order_products': seller_order_products,
+        'paymentrequests': paymentrequests,
 
     }
     return render(request, 'accounts/my_orders.html', context)
+
+
+@require_POST
+def update_status_to_pending(request):
+    recipients = Account.objects.filter(is_staff=True)
+    order_product_id = request.POST.get('order_product_id')
+    order_product = get_object_or_404(PaymentRequest, pk=order_product_id)
+    order_product.status = "pending"
+    order_product.save()
+    user = request.user
+    verb = f'{user.username} requested payment'
+    for recipient in recipients:
+        notify.send(user, recipient=recipient, verb=verb)
+
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
 
 
 
@@ -325,7 +359,7 @@ def update_order_status(request, order_id):
         new_status = request.POST.get('status')
         order.status = new_status
         order.save()
-        return redirect('inventory')  # Redirect to the order list page after updating the status
+        return redirect('inventory')
 
 @login_required(login_url='login')
 def edit_profile(request):
@@ -348,9 +382,7 @@ def edit_profile(request):
     }
     return render(request, 'accounts/edit_profile.html', context)
 
-from .utils import send_product_notification
-async def main(product):
-    await send_product_notification(product)
+
 @login_required(login_url='login')
 def add_product(request):
     if request.method == 'POST':
@@ -359,12 +391,6 @@ def add_product(request):
             product = form.save(commit=False)
             product.seller = request.user
             product.save()
-            product_created(sender=Product, instance=product, created=True)
-            try:
-                asyncio.run(main(product))
-            except Exception as e:
-                messages.error(request, f"An error occurred sending notification: {e}")
-
             messages.success(request, 'You have successfully added a new product.')
             return redirect('add_product')
     else:
@@ -373,7 +399,7 @@ def add_product(request):
     return render(request, 'accounts/add_product.html', {'form': form})
 
 
-from .forms import VariationForm
+
 
 
 def add_variation(request):
@@ -404,3 +430,42 @@ def add_product_gallery(request):
         form = ProductGalleryForm()
 
     return render(request, 'accounts/add_product_gallery.html', {'form': form})
+
+def all_payment_request(request):
+    payment_requests = PaymentRequest.objects.all().order_by('-submitted_at')
+    context = {
+        'payment_requests': payment_requests,
+    }
+    return render(request, 'accounts/payment_requests.html', context)
+
+def make_payment(request):
+    if request.method == 'POST':
+        phone_number = request.POST.get('phone_number')
+        payment_request_id = request.POST.get('payment_request_id')
+        try:
+            payment_request = PaymentRequest.objects.get(pk=payment_request_id)
+            # Call the payment function here, passing payment_request attributes
+            # For example:
+            pay_instance = PayClass()
+            response = pay_instance.withdrawmtnmomo(
+                amount=payment_request.total_cost,
+                currency="EUR",
+                txt_ref=str(uuid.uuid4()),
+                phone_number=phone_number,
+                payermessage="Payment for order: " + payment_request.order_number
+            )
+            print(f"this is response3: {response['response']}")
+            if response['response'] == 202:
+                payment_request.status = 'paid'
+                payment_request.save()
+                messages.success(request, 'status: success, message: Payment initiated successfully')
+                return redirect('all_payment_request')
+            else:
+                # Payment failed, handle accordingly
+                messages.error(request, 'status: error, message: Payment failed')
+                return redirect('all_payment_request')
+                # return JsonResponse({'status': 'error', 'message': 'Payment failed'})
+        except PaymentRequest.DoesNotExist:
+            messages.error(request, 'status: error, message: Payment request not found')
+            return redirect('all_payment_request')
+            # return JsonResponse({'status': 'error', 'message': 'Payment request not found'})

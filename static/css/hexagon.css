@@ -1,6 +1,13 @@
 
 
 
+.store2 {
+ background-color: #7abecc;
+  border-radius: 5px;
+  height: auto;
+  box-shadow: 16px 13px 40px #0a0000;
+
+  }
 ::-webkit-scrollbar {
     width: 10px;
     background-color: #F5F5F5;
