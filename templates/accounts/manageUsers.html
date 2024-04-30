@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+<!-- ========================= SECTION MAIN ========================= -->
+
+{% load static %}
+<!-- ========================= SECTION MAIN ========================= -->
+
+{% block content %}
+<style>
+  ##orderss {
+	  background: linear-gradient(250deg, #5D6D7E, #5D6D7E);
+	  height: 600px;
+	  background-position: center;
+	  background-repeat: no-repeat;
+	  background-size: cover;
+
+  }
+  .table{
+	  background: linear-gradient(250deg, #dc354585, #0524ff61);
+	  height: auto;
+	  background-position: center;
+	  background-repeat: no-repeat;
+	  background-size: cover;
+	  border-radius: 10px;
+  }
+  .orderss {
+  background-color: rgba(47, 54, 54, 0.57);
+  margin: 10px 10px;
+  border-radius: 20px;
+  padding: 10px;
+  height: auto;
+  box-shadow: 16px 13px 40px #0a0000;
+}
+  .orders_s {
+  background-color: #7abecc;
+  margin: 10px 10px;
+  border-radius: 20px;
+  padding: 10px;
+  height: auto;
+  box-shadow: 16px 13px 40px #0a0000;
+}
+.table-container {
+  max-height: 400px;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+  position: relative;
+}
+
+.table-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px; /* Width of the ruler */
+  height: 100%; /* Height of the ruler */
+  background-color: pink; /* Color of the ruler */
+}
+
+</style>
+
+
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-conten padding-y bg orders_s">
+
+<div class="container-fluid">
+	<div class="row">
+	{% include 'includes/dashboard_sidebar.html' %}
+	<main class="col-md-9">
+		<article class="card orderss">
+		<header class="card-header text-center">
+			<h2>Users' Accounts</h2>
+
+		</header>
+		<div class="card-body table">
+			<div class="row">
+				<div class="col-md-12 table-container" id="table">
+					<table class="table table-hover">
+					  <thead>
+						<tr>
+                         <th scope="col">Profile  </th>
+						  <th scope="col">first name  </th>
+						  <th scope="col">Last Name</th>
+						  <th scope="col">Phone</th>
+						  <th scope="col">Email</th>
+						  <th scope="col">Admin?</th>
+						  <th scope="col">Customer </th>
+                         <th scope="col">staff?</th>
+                         <th scope="col">active?</th>
+                         <th scope="col">Superadmin?</th>
+						<th scope="col">Action</th>
+
+						</tr>
+					  </thead>
+					  <tbody>
+						{% for user in users %}
+				    <tr>
+				      <td>	<img src="{{user.userprofile.profile_picture.url}}" alt="User Profile Picture" width="50" height="50" style="border-radius:50%;"></td>
+				      <td>{{user.first_name}}</td>
+                     <td>{{user.last_name}}</td>
+				      <td>{{user.phone_number}}</td>
+					  <td>{{user.email}}</td>
+				      <td>{{user.is_admin}}</td>
+					  <td>{{user.customer_type}}</td>
+					  <td>{{user.is_staff}}</td>
+					  <td>{{user.is_active}}</td>
+                      <td>{{user.is_superadmin}}</td>
+					<td><a href="{% url 'account_update' user.id %}"><button type="button" class="btn  btn-primary">Update</button></a></td>
+				    </tr>
+						{% endfor %}
+
+					  </tbody>
+					</table>
+				</div>
+			</div> <!-- row.// -->
+		</div> <!-- card-body .// -->
+		</article> <!-- order-group.// -->
+	</main>
+</div> <!-- row.// -->
+</div>
+
+
+</section>
+
+
+</body>
+</html>
+{% endblock %}

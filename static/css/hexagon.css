@@ -135,9 +135,9 @@ textarea, label {
 .pt-table {
   display: table;
   width: 100%;
-  height: -webkit-calc(100vh - 4px);
-  height: -moz-calc(100vh - 4px);
-  height: calc(100vh - 4px); }
+  height: -webkit-calc(60vh - 4px);
+  height: -moz-calc(60vh - 4px);
+  height: calc(60vh - 4px); }
 
 .pt-tablecell {
   display: table-cell;
@@ -543,8 +543,8 @@ textarea, label {
 }
 
 .pt-table.desktop-768 .pt-tablecell {
-    padding-bottom: 110px;
-    padding-top: 60px;
+    padding-bottom: 0;
+    padding-top: 0;
 }
 
 

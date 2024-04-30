@@ -14,6 +14,7 @@
 		<!--   SIDEBAR   -->
 		<ul class="list-group dashboard">
 	{% if user.is_staff %}
+		<a class="list-group-item {% if '/manageUsers/' == request.path %}active{% endif %}" href="{% url 'manageUsers' %}">Manage Users </a>
 		<a class="list-group-item {% if '/add_category/' == request.path %}active{% endif %}" href="{% url 'add_category' %}"> Add Category </a>
 		<a class="list-group-item {% if '/add_product/' == request.path %}active{% endif %}" href="{% url 'add_product' %}"> Add Product</a>
 		<a class="list-group-item {% if '/add_variation/' == request.path %}active{% endif %}" href="{% url 'add_variation' %}">Update product variation</a>

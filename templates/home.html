@@ -28,16 +28,125 @@ body{
   height: auto;
   box-shadow: 0 15px 25px rgba(129, 124, 124, 0.2);
 }
+/*paginator*/
+                a {
+                text-decoration: none;
+                color: #007bff;
+                transition: color 0.3s ease;
+            }
+
+            a:hover {
+                color: #0056b3;
+            }
+
+            ul {
+                list-style: none;
+                padding: 0;
+            }
+
+            ul li {
+                padding: 8px 0;
+            }
+
+            .pagination {
+                display: flex;
+                list-style: none;
+                padding: 0;
+            }
+
+            .pagination li {
+                margin: 0 5px;
+            }
+
+            .pagination li a {
+                color: #333;
+                padding: 5px 10px;
+                text-decoration: none;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                transition: background-color 0.3s ease;
+            }
+
+            .pagination li a:hover {
+                background-color: #f0f0f0;
+            }
+
+            .pagination .active a {
+                background-color: #007bff;
+                color: #fff;
+                border-color: #007bff;
+            }
+
+            .pagination .active a:hover {
+                background-color: #0056b3;
+            }
 
 
+    .filter-label {
+        cursor: pointer;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .filter-form {
+        display: none;
+    }
+
+    #toggleFilter:checked ~ .filter-form {
+        display: block;
+    }
+
+    .filter-group {
+        margin: 20px;
+    }
+
+    .country-columns {
+        column-count: 8;
+        column-gap: 20px;
+        display: inline-block;
+    }
+
+    .tags-columns {
+        column-count: 8;
+        column-gap: 20px;
+        display: inline-block;
+    }
     </style>
 <html>
 <link rel="stylesheet" href="{% static 'css/hexagon.css' %}">
 <body class="body">
 <br>
-<br>
-<br>
 
+<input type="checkbox" id="toggleFilter" style="display: none;">
+
+<button class="btn btn-primary btn-sm text-center"><label for="toggleFilter" class="filter-label">Filter Products</label></button>
+
+<div id="filterForm" class="filter-form container">
+    <form method="GET" action="{% url 'home' %}">
+        <div class="filter-group tags-columns">
+            <label for="tags" style="font-size: 2em; font-weight: 500;">Tags:</label>
+            <br> <br>
+            {% for tag in tags %}
+                <input type="checkbox" id="{{ tag.name }}" name="tag" value="{{ tag.name }}">
+                <label for="{{ tag.name }}">{{ tag.name }}</label><br>
+            {% endfor %}
+        </div>
+
+        <div class="filter-group country-columns">
+            <label for="country" style="font-size: 2em; font-weight: 500;">Country:</label>
+            <br> <br>
+            {% for country in countries %}
+                <input type="checkbox" id="{{ country }}" name="country" value="{{ country }}">
+                <label for="{{ country }}">{{ country }}</label><br>
+            {% endfor %}
+        </div>
+
+        <br>
+
+        <button type="submit" class="btn btn-secondary btn-sm text-center">Apply Filters</button>
+    </form>
+</div>
+<br>
 <div id="carouselExampleControls" class="carousel slide " data-ride="carousel">
     <div class="carousel-inner">
         {% for product in products %}
@@ -94,7 +203,7 @@ body{
           <br>
         <header class="section-heading">
           <a href="{% url 'store' %}" class="btn btn-outline-primary float-right">See all</a>
-          <h4 class="section-title text-center">Popular products</h4>
+          <h1 class="section-title text-center" style="font-size: 3em; font-weight: 900;">Popular products</h1>
         </header>
         <!-- sect-heading -->
 
@@ -144,11 +253,59 @@ body{
 
         </div>
         <!-- row.// -->
+  <div class="d-flex justify-content-center">
+          <ul class="pagination">
+          {% if products.has_other_pages %}
+          <ul class="pagination">
+              {% if products.has_previous %}
+                  <li><a href="?page=1">First</a></li>
+                  <li><a href="?page={{ products.previous_page_number }}">Previous</a></li>
+              {% endif %}
+              {% for i in products.paginator.page_range %}
+                  <li {% if products.number == i %}class="active"{% endif %}><a href="?page={{ i }}">{{ i }}</a></li>
+              {% endfor %}
+              {% if products.has_next %}
+                  <li><a href="?page={{ products.next_page_number }}">Next</a></li>
+                  <li><a href="?page={{ products.paginator.num_pages }}">Last</a></li>
+              {% endif %}
+          </ul>
+          {% endif %}
+        </ul>
+  </div>
       </div>
       <!-- container // -->
     </section>
     <!-- ========================= SECTION  END// ========================= -->
+<section  class="testimonies-section">
+    <link rel="stylesheet" href="{% static 'css/testimonies.css' %}">
+    <div class="container">
+         <h1 class="text-center" style="font-size: 3em; font-weight: 900;">Testimonies</h1>
 
+        <div class="row">
+            {% for testimony in testimonies %}
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="face front-face">
+                        <img src="{{testimony.author.userprofile.profile_picture.url}}"
+                            alt="" class="profile">
+                        <div class="pt-3 text-uppercase name">
+                            {{testimony.author.full_name}}
+                        </div>
+                        <div class="designation">{{ testimony.author.customer_type }}</div>
+                    </div>
+                    <div class="face back-face">
+                        <span class="fas fa-quote-left"></span>
+                        <div class="testimonial">
+                            {{testimony.content|safe}}
+                        </div>
+                        <span class="fas fa-quote-right"></span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
 
   </body>
 </html>

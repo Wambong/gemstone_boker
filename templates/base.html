@@ -1,4 +1,5 @@
 {% load static %}
+
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
@@ -39,7 +40,8 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
 		<link rel="stylesheet" href="{% static 'main.css' %}">
 		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-
+<link href="{% static 'django_ckeditor_5/dist/styles.css' %}" type="text/css" media="all" rel="stylesheet">
+<script src="{% static 'django_ckeditor_5/dist/bundle.js' %}"></script>
 <!-- PayPal Script -->
 <script src="https://www.paypal.com/sdk/js?client-id=AVBSMqNtoZ1IUO6lrSe6-vm9AIV1ZKN8CgXu_nINRs80xELRs650mh3yR62groIUg-GCe59Od_EFOG6O&currency=USD"></script>
 
@@ -194,9 +196,74 @@
 
 
 <footer>
-	<section class="store2">
-      <div class="pt-table desktop-768">
-    <div class="pt-tablecell page-home relative" style="">
+	<section class="">
+          <a href="{% url 'create_testimony' %}"> <button type="submit" class="btn  btn-primary">Add Testimony</button></a>
+        <div class="column">
+            <div class="form-section">
+               <link rel="stylesheet" href="{% static 'css/form.css' %}">
+                <div class="background">
+              <div class="container">
+                <div class="screen">
+                  <div class="screen-header">
+                    <div class="screen-header-left">
+                      <div class="screen-header-button close"></div>
+                      <div class="screen-header-button maximize"></div>
+                      <div class="screen-header-button minimize"></div>
+                    </div>
+                    <div class="screen-header-right">
+                      <div class="screen-header-ellipsis"></div>
+                      <div class="screen-header-ellipsis"></div>
+                      <div class="screen-header-ellipsis"></div>
+                    </div>
+                  </div>
+                  <div class="screen-body row">
+                    <div class="screen-body-item left col-sm-4">
+                      <div class="app-title">
+                        <span>CONTACT US</span>
+
+                      </div>
+                      <div class="app-contact">CONTACT INFO : +62 81 314 928 595</div>
+                    </div>
+                    <div class="screen-body-item col-sm-8">
+                      <div class="app-form">
+                        <div class="app-form-group">
+                          <input class="app-form-control" placeholder="NAME" >
+                        </div>
+                        <div class="app-form-group">
+                          <input class="app-form-control" placeholder="EMAIL">
+                        </div>
+                        <div class="app-form-group">
+                          <input class="app-form-control" placeholder="CONTACT NO">
+                        </div>
+                        <div class="app-form-group message">
+                          <input class="app-form-control" placeholder="MESSAGE">
+                        </div>
+                        <div class="app-form-group buttons">
+                          <button class="app-form-button">CANCEL</button>
+                          <button class="app-form-button">SEND</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="credits">
+                  inspired by
+                    <svg class="dribbble" viewBox="0 0 200 200">
+                      <g stroke="#ffffff" fill="none">
+                        <circle cx="100" cy="100" r="90" stroke-width="20"></circle>
+                        <path d="M62.737004,13.7923523 C105.08055,51.0454853 135.018754,126.906957 141.768278,182.963345" stroke-width="20"></path>
+                        <path d="M10.3787186,87.7261455 C41.7092324,90.9577894 125.850356,86.5317271 163.474536,38.7920951" stroke-width="20"></path>
+                        <path d="M41.3611549,163.928627 C62.9207607,117.659048 137.020642,86.7137169 189.041451,107.858103" stroke-width="20"></path>
+                      </g>
+                    </svg>
+                    Wambong
+                  </a>
+                </div>
+              </div>
+</div>
+            </div>
+    <div class="pt-table desktop-768 row">
+    <div class="pt-tablecell page-home" style="">
                     <div class=""></div>
                     <div class="container">
                         <div class="row">
@@ -222,7 +289,7 @@
                                                 </span>
                                                 <span class="title">Welcome</span>
                                             </span>
-                                            <svg viewBox="0 0 173.20508075688772 200" height="200" width="174" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z" fill="#D2E3C8"></path></svg>
+                                            <svg viewBox="0 0 173.20508075688772 200" height="200" width="174" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z" fill="#1e2530"></path></svg>
                                         </a>
                                     </div>
                                     <div class="hexagon-item">
@@ -236,14 +303,14 @@
                                             <div></div>
                                             <div></div>
                                         </div>
-                                        <a  class="hex-content">
+                                        <a  class="hex-content" href="{% url 'about-us' %}">
                                             <span class="hex-content-inner">
                                                 <span class="icon">
                                                     <i class="fa fa-bullseye"></i>
                                                 </span>
-                                                <span class="title">About</span>
+                                                <span class="title">About Us</span>
                                             </span>
-                                            <svg viewBox="0 0 173.20508075688772 200" height="200" width="174" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z" fill="#FF8080"></path></svg>
+                                            <svg viewBox="0 0 173.20508075688772 200" height="200" width="174" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z" fill="#1e2530"></path></svg>
                                         </a>
                                     </div>
                                     <div class="hexagon-item">
@@ -327,7 +394,7 @@
                                                 </span>
                                                 <span class="title">Testimonials</span>
                                             </span>
-                                            <svg viewBox="0 0 173.20508075688772 200" height="200" width="174" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z" fill="#A367B1"></path></svg>
+                                            <svg viewBox="0 0 173.20508075688772 200" height="200" width="174" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z" fill="#1e2530"></path></svg>
                                         </a>
                                     </div>
                                     <div class="hexagon-item">
@@ -358,6 +425,8 @@
                     </div>
                 </div>
             </div>
+        </div>
+
 </section>
 </footer>
 </body>

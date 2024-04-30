@@ -1,8 +1,8 @@
 from django import forms
-from .models import Account, UserProfile
+from .models import Account, UserProfile, Testimony
 from django.core.exceptions import ValidationError
 from multiupload.fields import MultiFileField
-
+from django_ckeditor_5.widgets import CKEditor5Widget
 from store.models import Product
 
 
@@ -69,14 +69,23 @@ class UserProfileForm(forms.ModelForm):
         super(UserProfileForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'
+class AccountUpdateForm(forms.ModelForm):
+  class Meta:
+    model = Account
+    fields = ["phone_number", "is_admin", "customer_type", "is_staff", "is_active", "is_superadmin"]
 
 
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = [
-            'product_name', 'slug', 'description', 'price', 'images', 'stock', 'is_Available', 'category', 'country'
+                 'product_name', 'slug', 'description', 'price', 'images', 'stock', 'is_Available', 'category', 'country'
                 ]
+        widgets = {
+            "description": CKEditor5Widget(
+                attrs={"class": "django_ckeditor_5"}, config_name="extends"
+            )
+        }
 
 
 
@@ -101,3 +110,14 @@ class ProductGalleryForm(forms.ModelForm):
     class Meta:
         model = ProductGallery
         fields = ['product', 'images']
+
+
+
+
+
+class TestimonyForm(forms.ModelForm):
+  class Meta:
+    model = Testimony
+    fields = ['content']
+
+

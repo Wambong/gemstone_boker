@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+<!-- ========================= SECTION MAIN ========================= -->
+{% load crispy_forms_tags %}
+{% load static %}
+<!-- ========================= SECTION MAIN ========================= -->
+
+{% block content %}
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Product</title>
+</head>
+<body>
+    <h1>Update Product</h1>
+    <div id="form-container" class="container form-container">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form.media}}
+            {{ form|crispy }}
+            <button type="submit">Update</button>
+        </form>
+</div>
+</body>
+</html>
+
+{% endblock %}

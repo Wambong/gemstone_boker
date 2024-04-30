@@ -5,11 +5,11 @@ from carts.views import _cart_id
 from carts.models import CartItem
 from django.db.models import Q
 from django.http import HttpResponse
-
-
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from category.models import Category
-from .forms import ReviewForm
+from .forms import ReviewForm, ProducteditForm
 from django.contrib import messages
 from orders.models import OrderProduct
 
@@ -27,7 +27,7 @@ def store(request, category_slug=None):
         product_count = products.count()
     else:
         products = Product.objects.all().filter(is_Available=True).order_by('id')
-        paginator = Paginator(products, 10)
+        paginator = Paginator(products, 12)
         page = request.GET.get('page')
         paged_products = paginator.get_page(page)
         product_count = products.count()
@@ -37,37 +37,6 @@ def store(request, category_slug=None):
         'product_count': product_count,
     }
     return render(request, 'store/store.html', context)
-
-
-def product_detail(request, category_slug, product_slug):
-    try:
-        single_product = Product.objects.get(category__slug= category_slug, slug=product_slug)
-        in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request), product=single_product).exists()
-
-    except Exception as e:
-        raise e
-
-    if request.user.is_authenticated:
-        try:
-            orderproduct = OrderProduct.objects.filter(user=request.user, product_id=single_product.id).exists()
-        except OrderProduct.DoesNotExist:
-            orderproduct = None
-    else:
-        orderproduct = None
-
-
-    reviews = ReviewRating.objects.filter(product_id=single_product.id, status=True)
-    # Get the product gallery
-    product_gallery = ProductGallery.objects.filter(product_id=single_product.id)
-
-    context={
-        "single_product": single_product,
-         "in_cart": in_cart,
-        'orderproduct': orderproduct,
-        'reviews': reviews,
-        'product_gallery': product_gallery
-    }
-    return render(request, 'store/product_detail.html', context)
 
 
 def search(request):
@@ -107,12 +76,6 @@ def submit_review(request, product_id):
                 messages.success(request, 'Thank you! Your review has been submitted.')
                 return redirect(url)
 
-
-
-
-def index(request):
-    return render(request,'index.html')
-
 def category_detail(request, slug):
     category = get_object_or_404(Category, slug=slug)
     products = category.products.filter(parent=None)
@@ -121,5 +84,68 @@ def category_detail(request, slug):
         'category': category,
         'products': products
     }
-
     return render(request, 'store/category_detail.html', context)
+
+def product_detail(request, category_slug, product_slug):
+    try:
+        single_product = Product.objects.get(category__slug= category_slug, slug=product_slug)
+        category =  single_product.category
+        in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request), product=single_product).exists()
+
+    except Exception as e:
+        raise e
+
+    if request.user.is_authenticated:
+        try:
+            orderproduct = OrderProduct.objects.filter(user=request.user, product_id=single_product.id).exists()
+        except OrderProduct.DoesNotExist:
+            orderproduct = None
+    else:
+        orderproduct = None
+
+
+    reviews = ReviewRating.objects.filter(product_id=single_product.id, status=True)
+    product_gallery = ProductGallery.objects.filter(product_id=single_product.id)
+
+    update_url = reverse('product_update', kwargs={'category_slug': category_slug, 'product_slug': product_slug})
+    delete_url = reverse('product_delete', kwargs={'category_slug': category_slug, 'product_slug': product_slug})
+
+
+    context={
+        "single_product": single_product,
+         "in_cart": in_cart,
+        'orderproduct': orderproduct,
+        'reviews': reviews,
+        'product_gallery': product_gallery,
+        "category":category,
+        "update_url": update_url,
+        "delete_url": delete_url,
+    }
+    return render(request, 'store/product_detail.html', context)
+@login_required
+def product_update(request, category_slug, product_slug):
+    product = get_object_or_404(Product, category__slug=category_slug, slug=product_slug)
+    if request.method == 'POST':
+        form = ProducteditForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+    else:
+        form = ProducteditForm(instance=product)
+    context = {'form': form, 'product': product}
+    return render(request, 'store/update_product.html', context)
+
+@login_required
+def product_delete(request, category_slug, product_slug):
+    product = get_object_or_404(Product, category__slug=category_slug, slug=product_slug)
+
+    if request.method == 'POST':
+        product.delete()
+        return redirect('/')
+
+    context = {'product': product}
+    return render(request, 'store/delete_product.html', context)
+
+
+def index(request):
+    return render(request,'index.html')

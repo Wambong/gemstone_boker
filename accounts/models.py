@@ -1,7 +1,7 @@
 from django.db import models
 from phone_field import PhoneField
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-
+from django_ckeditor_5.fields import CKEditor5Field
 
 class MyAccountManager(BaseUserManager):
     def create_user(self, first_name, last_name, username, email, customer_type, password=None):
@@ -100,4 +100,13 @@ class UserProfile(models.Model):
         return f'{self.address_line_1} {self.address_line_2}'
 
 
+
+class Testimony(models.Model):
+  author = models.ForeignKey(Account, on_delete=models.CASCADE)
+  content = CKEditor5Field('Text', config_name='extends', null=True, blank=True)
+  approved = models.BooleanField(default=True)
+  created_at = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+    return self.content[:50] + "..."  # Truncate long content for display
 

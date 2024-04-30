@@ -7,6 +7,8 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     path('logout/', views.logout, name='logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('manageUsers', views.manageUsers, name='manageUsers'),
+    path('account/update/<int:user_id>/', views.account_update, name='account_update'),
     path('', views.dashboard, name='dashboard'),
     path('forgotpassword/', views.forgotpassword, name='forgotpassword'),
     path('add_product/', views.add_product, name='add_product'),
@@ -25,6 +27,10 @@ urlpatterns = [
     path('change_password/', views.change_password, name='change_password'),
     path('order_detail/<int:order_id>/', views.order_detail, name='order_detail'),
     path('update_order_status/<int:order_id>/', update_order_status, name='update_order_status'),
+    path('testimonials/create/', views.create_testimony, name='create_testimony'),
+    path('about-us', views.aboutus, name = "about-us"),
+
+
 
 
 ]

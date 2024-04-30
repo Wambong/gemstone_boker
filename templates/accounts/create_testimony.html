@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+<!-- ========================= SECTION MAIN ========================= -->
+{% load crispy_forms_tags %}
+{% load static %}
+<!-- ========================= SECTION MAIN ========================= -->
+
+{% block content %}
+<body>
+<h1>Write a Testimony</h1>
+<div class="container">
+  <form method="post">
+  {% csrf_token %}
+        {{form.media}}
+        {{ form|crispy }}
+  <button type="submit" class="btn  btn-primary">Submit</button>
+</form>
+</div>
+
+
+{% endblock %}

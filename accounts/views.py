@@ -24,10 +24,10 @@ from .mtnmomo import PayClass
 from carts.models import *
 from carts.views import _cart_id
 from orders.models import Order, OrderProduct, PaymentRequest
-from .forms import ProductForm
-from .forms import RegistrationForm, UserForm, UserProfileForm
-from .models import UserProfile
-from .forms import VariationForm
+from django.contrib.auth import update_session_auth_hash
+from .forms import RegistrationForm, UserForm, UserProfileForm, AccountUpdateForm, VariationForm, ProductForm,  TestimonyForm
+from .models import UserProfile, Testimony
+
 
 def register(request):
     if request.method == 'POST':
@@ -78,6 +78,7 @@ def register(request):
         "form": form,
     }
     return render(request, "accounts/register.html", context)
+
 
 def login(request):
     if request.method == 'POST':
@@ -188,6 +189,30 @@ def dashboard(request):
     return render(request, "accounts/dashboard.html", context)
 
 
+@login_required(login_url='login')
+def manageUsers(request):
+    users = Account.objects.all()
+    context = {
+        'users': users,
+    }
+    return render(request, "accounts/manageUsers.html", context)
+
+
+def account_update(request, user_id):
+    user = get_object_or_404(Account, pk=user_id)  # Fetch user by ID from URL
+    if request.method == 'POST':
+        account_form = AccountUpdateForm(request.POST, instance=user)
+        if account_form.is_valid():
+            account_form.save()
+            update_session_auth_hash(request, user)  # Update session after password change (if applicable)
+            messages.success(request, 'Account has been updated!')
+            return redirect('account_update', user_id=user.id)  # Redirect back to update page for same user
+    else:
+        account_form = AccountUpdateForm(instance=user)
+    context = {'account_form': account_form}
+    return render(request, 'accounts/account_update.html', context)
+
+
 def forgotpassword(request):
     if request.method == 'POST':
         email = request.POST['email']
@@ -252,7 +277,6 @@ def resetPassword(request):
 
 @login_required(login_url='login')
 def my_orders(request):
-
     orders = Order.objects.filter(user=request.user, is_ordered=True).order_by('-created_at')
     products = Product.objects.filter(seller=request.user, is_Available=True).order_by('id')
     seller = request.user
@@ -299,7 +323,6 @@ def update_status_to_pending(request):
         notify.send(user, recipient=recipient, verb=verb)
 
     return redirect(request.META.get('HTTP_REFERER', 'home'))
-
 
 
 @login_required(login_url='login')
@@ -361,6 +384,7 @@ def update_order_status(request, order_id):
         order.save()
         return redirect('inventory')
 
+
 @login_required(login_url='login')
 def edit_profile(request):
     userprofile = get_object_or_404(UserProfile, user=request.user)
@@ -399,9 +423,6 @@ def add_product(request):
     return render(request, 'accounts/add_product.html', {'form': form})
 
 
-
-
-
 def add_variation(request):
     if request.method == 'POST':
         form = VariationForm(request.POST)
@@ -431,12 +452,14 @@ def add_product_gallery(request):
 
     return render(request, 'accounts/add_product_gallery.html', {'form': form})
 
+
 def all_payment_request(request):
     payment_requests = PaymentRequest.objects.all().order_by('-submitted_at')
     context = {
         'payment_requests': payment_requests,
     }
     return render(request, 'accounts/payment_requests.html', context)
+
 
 def make_payment(request):
     if request.method == 'POST':
@@ -464,8 +487,34 @@ def make_payment(request):
                 # Payment failed, handle accordingly
                 messages.error(request, 'status: error, message: Payment failed')
                 return redirect('all_payment_request')
-                # return JsonResponse({'status': 'error', 'message': 'Payment failed'})
         except PaymentRequest.DoesNotExist:
             messages.error(request, 'status: error, message: Payment request not found')
             return redirect('all_payment_request')
-            # return JsonResponse({'status': 'error', 'message': 'Payment request not found'})
+
+
+
+
+@login_required
+def create_testimony(request):
+  if request.method == 'POST':
+    form = TestimonyForm(request.POST)
+    if form.is_valid():
+      testimony = form.save(commit=False)
+      testimony.author = request.user
+      testimony.save()
+      return redirect('/')
+  else:
+    form = TestimonyForm()
+
+  context = {'form': form}
+  return render(request, 'accounts/create_testimony.html', context)
+
+
+
+def aboutus(request):
+    testimonies = Testimony.objects.filter(approved=True).order_by('-created_at')
+    context = {
+        'testimonies': testimonies,
+    }
+    return render(request, "aboutUs.html", context)
+

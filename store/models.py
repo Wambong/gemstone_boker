@@ -1,15 +1,20 @@
 from django.db import models
 from django.shortcuts import render
 from django.utils.text import slugify
-from ckeditor_uploader.fields import RichTextUploadingField
-# from mptt.models import MPTTModel, TreeForeignKey
+# from ckeditor_uploader.fields import RichTextUploadingField
+
 from category.models import Category
 from django.urls import reverse
 from accounts.models import Account
 from django.db.models import Avg, Count
+from django_ckeditor_5.fields import CKEditor5Field
 
+class Tag(models.Model):
+    name = models.CharField(max_length=100, unique=True)
 
-# Create your models here.
+    def __str__(self):
+        return self.name
+
 class Product(models.Model):
     COUNTRY = (
         ('Algeria', 'Algeria'), ('Angola', 'Angola'), ('Benin', 'Benin'), ('Botswana', 'Botswana'),
@@ -35,12 +40,13 @@ class Product(models.Model):
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE, null=True, blank=True)
     parent = models.ForeignKey('self', related_name='variants', on_delete=models.CASCADE, blank=True, null=True)
     slug = models.SlugField(max_length=200, unique=True)
-    description = RichTextUploadingField(null=True, blank=True)
+    description = CKEditor5Field('Text', config_name='extends', null=True, blank=True)
     seller = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)
     price = models.IntegerField()
     images = models.ImageField(upload_to='photos/products')
     stock = models.IntegerField()
     country = models.CharField(max_length=220, choices=COUNTRY, null=True, blank=True)
+    tags = models.ManyToManyField(Tag, blank=True, null= True)
     is_Available = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True)
     is_verified = models.BooleanField(default=False)
